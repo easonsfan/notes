@@ -1,2 +1,2 @@
 # notes
-fontend notes
+记录学习前端时的一些笔记

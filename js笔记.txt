@@ -235,48 +235,7 @@ WeakMap和Map：
 WeakMap能防止内存泄漏，是因为WeakMap不会对key的对象进行引用，在对象没有引用时，垃圾回收机制会清除掉这个对象；
 而Map是会引用key的对象的，对象没有外部引用，但是Map还是会引用这个对象，自然不能防止内存泄漏
 ***********************************************************************************************
-nginx文件配置解释：
-全局块：配置影响nginx全局的指令。
-worker_processes    1；
 
-event块：配置影响nginx服务器或与用户的网络连接。
-events {
-     worker_connections  1024;
-}
-http块：可以嵌套多个server，配置代理，缓存，日志定义等绝大多数功能和第三方模块的配置。反向代理主要配置这里
-http{
-	#http的全局块
-	.......
-	#http的server块：配置虚拟主机的相关参数，一个http可以配置多个server
-	#一般反向代理写法：
-	server{
-	    listen               80;                                 # 在浏览器访问时的端口号，默认为80端口号，在浏览器输入地址时可以不用加端口号	
-	    server_name    192.168.17.256;              # 在浏览器访问时的ip地址，如果购买了域名，备案后直接在浏览器用域名访问     
-	    #http的location块：配置请求的路由，一个server可以配置多个location          
-	    location ~ /edu/ {                                  # edu是访问地址的路径path
- 	        proxy_pass   http:127.0.0.1:8080;       # 后端代码启动的地址 
-	    }
-	    location ~ /vod/ {                                  
- 	        proxy_pass   http:127.0.0.1:8081;      
-	    }
-	}
-	#负载均衡写法：
-	upstream myserver{
-	    server 192.168.17.129:8080 weight=2;
-	    server 192.168.17.129:8081 weight=1;
-	    #ip_hash;
-	    #fair；
-	}
-	server{
-	    listen               80;                                	
-	    server_name    192.168.17.256;              
-	    location ~ /edu/ {                                  
- 	        proxy_pass   http://myserver;       
-	    }
-	}
-}
-
-***********************************************************************************************
 谷歌的RAIL性能模型：
 R（Response）响应：尽可能快的响应用户，应该在100ms以内响应用户操作，
 A（Animation）动画：展示动画，应该每一帧以10ms进行渲染。因为屏幕的刷新率时60帧/s，所以1帧就是1000ms/60约等于16.6ms，
