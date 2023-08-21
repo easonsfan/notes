@@ -140,19 +140,19 @@
        stage-4：完成，正式发布。
 
 ### 十三. polyfill：
-        1.某些浏览器没有的API或者构造器，例如，Promise、Generator、Symbol等，babel转换后还是一样，所以在这些浏览器会报错，
-           这时候就需要通过polyfill实现一个Promise，然后一起打包。
+        1. 某些浏览器没有的API或者构造器，例如，Promise、Generator、Symbol等，babel转换后还是一样，所以在这些浏览器会报错，
+            这时候就需要通过polyfill实现一个Promise，然后一起打包。
         2. babel 7.4.0以前使用@babel/polyfill，之后就使用core-js和regenerator-runtime来使用，这个是开发和生成都需要的依赖       
-        3.配置polyfill：
-           在babel.config.js的presets数组里，@babel/preset-env数组第二个参数对象里配置
-           module.exports = {
-               presets:[
-                   ['@babel/preset-env',{
-                       corejs:3, // corejs插件的版本
-                       useBuiltIns: 'usage', // 3个参数，false：不使用polyfill，usage：按需使用，entry：针对第三方依赖需要使用的，在入口文件使用import  'corejs/stable';import 'regenerator-runtime/runtime';
-                   }]
-               ]
-           }
+        3. 配置polyfill：
+            在babel.config.js的presets数组里，@babel/preset-env数组第二个参数对象里配置
+            module.exports = {
+                presets:[
+                    ['@babel/preset-env',{
+                        corejs:3, // corejs插件的版本
+                        useBuiltIns: 'usage', // 3个参数，false：不使用polyfill，usage：按需使用，entry：针对第三方依赖需要使用的，在入口文件使用import  'corejs/stable';import 'regenerator-runtime/runtime';
+                    }]
+                ]
+            }
 
 ### 十四.react和typescript：
        1.处理react的jsx文件和ts文件都可以用babel-loader，而且它们都有对应的babel预设：@babel/preset-react、@babel/preset-typescript；
@@ -162,61 +162,61 @@
 
 ## 性能优化：
 ### 一. 代码分离：
-1. 入口entry：
-     1.1 entry可以配置单个入口，也可以配置多个入口，也可以以数组把多个文件作为一个入口。
-     2.1 多入口重复的依赖共享：
-          通过入口配置的dependOn和shared关联，这样可以把多入口文件重复的依赖只打包一份。
+    1. 入口entry：
+        1.1 entry可以配置单个入口，也可以配置多个入口，也可以以数组把多个文件作为一个入口。
+        2.1 多入口重复的依赖共享：
+            通过入口配置的dependOn和shared关联，这样可以把多入口文件重复的依赖只打包一份。
 
-2. 动态导入import()：
-     1.1 webapck会把动态导入的模块单独打包，实现代码分离。
-     2.1 分包的名字通过output.chunkFilename设置，而且可以通过import(/* webpackChunkName: about*/, 模块路径)设置[name]
+    2. 动态导入import()：
+        1.1 webapck会把动态导入的模块单独打包，实现代码分离。
+        2.1 分包的名字通过output.chunkFilename设置，而且可以通过import(/* webpackChunkName: about*/, 模块路径)设置[name]
 
-3. splitChunks:
-    3.1 默认对异步导入的模块分包，静态导入的本地模块或者第三方依赖不会分包。
-    3.2 设置optimization.splitChunks.chunks为all，就可以对异步模块、第三方依赖分包，静态导入的本地模块仍然不会分包的。
-          splitChunks的其他属性：
-              maxSize：分包出来的文件大小不能大于这个值，否则不会分包；
-              minSize：分包出来的文件大小不能小于这个值，否则不会分包；
-              cacheGroups：test匹配对应文件夹下的模块，对他们进行分包，只有匹配上，所有模块都能进行分包，前提是chunks=all
-              cacheGroups：{
-                  vendors：{
-                      test：/node_modules/，
-                      filename：'[name]_vendors.js'
-                  },
-                  utils：{
-                      test：/utils/，
-                      filename：'[name]_utils.js'
-                  }
-              }
+    3. splitChunks:
+        3.1 默认对异步导入的模块分包，静态导入的本地模块或者第三方依赖不会分包。
+        3.2 设置optimization.splitChunks.chunks为all，就可以对异步模块、第三方依赖分包，静态导入的本地模块仍然不会分包的。
+            splitChunks的其他属性：
+                maxSize：分包出来的文件大小不能大于这个值，否则不会分包；
+                minSize：分包出来的文件大小不能小于这个值，否则不会分包；
+                cacheGroups：test匹配对应文件夹下的模块，对他们进行分包，只有匹配上，所有模块都能进行分包，前提是chunks=all
+                cacheGroups：{
+                    vendors：{
+                        test：/node_modules/，
+                        filename：'[name]_vendors.js'
+                    },
+                    utils：{
+                        test：/utils/，
+                        filename：'[name]_utils.js'
+                    }
+                }
 
-4. chunkIds：
-    1. 可以设置分离出来的模块的文件名，有几个常用值：
-        named：对调试更友好的id，也就是文件夹加原来文件名组成的名字，开发环境默认使用；
-        natural：按模块使用顺序的数字id，根据对模块的使用改变，数字也会改变。不利于缓存；
-        deterministic：只有模块不改变，多次编译也不会改变的id。webpack5才有的属性，有利于缓存，生产环境默认使用。
+    4. chunkIds：
+        1. 可以设置分离出来的模块的文件名，有几个常用值：
+            named：对调试更友好的id，也就是文件夹加原来文件名组成的名字，开发环境默认使用；
+            natural：按模块使用顺序的数字id，根据对模块的使用改变，数字也会改变。不利于缓存；
+            deterministic：只有模块不改变，多次编译也不会改变的id。webpack5才有的属性，有利于缓存，生产环境默认使用。
 
-5. prefetch和preload：
-    1.配置：import(/*webpackPrefetch:true*/, 模块路径)
-    prefetch会在主包下载完之后才会下载，preload会和主包并行下载，一般使用prefetch好一点。
+    5. prefetch和preload：
+        1. 配置：import(/*webpackPrefetch:true*/, 模块路径)
+            prefetch会在主包下载完之后才会下载，preload会和主包并行下载，一般使用prefetch好一点。
 
-6. css代码分离：
-    使用mini-css-extract-plugin在plugins配置filename，可以设置css文件名和文件夹位置，这样就可以把css从js中分离出来，
-    同时在处理css的rule里面使用mini-css-extract-plugin的loader，会把css文件通过link引入html
+    6. css代码分离：
+        使用mini-css-extract-plugin在plugins配置filename，可以设置css文件名和文件夹位置，这样就可以把css从js中分离出来，
+        同时在处理css的rule里面使用mini-css-extract-plugin的loader，会把css文件通过link引入html
 
 ### 二. CDN服务器：
-     CDN，content delivery(distribution) network，内容分发网络。通过相互连接的网络系统，选择使用最靠近用户的服务器把内容返回。
-     1.第一种优化，把自己的项目部署到CDN服务器，需要在output.publicPath配置CDN服务器地址，打包出来的index.html引入的script的src属性会自动加上该地址。
-     2.第二种优化，第三方依赖用CDN引入，不参与打包，在生成环境配置：
+    CDN，content delivery(distribution) network，内容分发网络。通过相互连接的网络系统，选择使用最靠近用户的服务器把内容返回。
+    1. 第一种优化，把自己的项目部署到CDN服务器，需要在output.publicPath配置CDN服务器地址，打包出来的index.html引入的script的src属性会自动加上该地址。
+    2. 第二种优化，第三方依赖用CDN引入，不参与打包，在生产环境配置：
         externals：{
-           axios：'axios' //  key是项目中导入模块的名字，就是from 'axios'中的axios，value是CDN导入的全局名称
+            axios：'axios' //  key是项目中导入模块的名字，就是from 'axios'中的axios，value是CDN导入的全局名称
         }
         配置完webpack后，还需要在index.html模板中用script导入CDN中的依赖。
         <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
         *****注意：就算不通过import引入axios，webpack也可以知道不打包axios，打包后通过CDN导入的全局对象使用axios。
 
 ### 三. shimming垫片：了解即可，很少用，以下只是其中一种用法。
-     第三方的依赖没有引入axios但使用了axios时，会报错，
-     使用ProvidePlugin插件，插入全局变量axios，就可以不用引入axios都能使用了
+    第三方的依赖没有引入axios但使用了axios时，会报错，
+    使用ProvidePlugin插件，插入全局变量axios，就可以不用引入axios都能使用了
 
 ### 四. 代码压缩：
     1. js代码压缩：
@@ -227,19 +227,19 @@
        使用CSSMinimizerWebpackPlugin进行压缩
 
 ### 五. tree-shaking：
-     1. js代码的tree-shaking
-         1.1 optimization.usedExports
-               对导出但是没有使用的内容添加魔法注释unused harmony export xxxxx，用来告诉TerserPlugin删除哪些没用的js代码，而且compress.unused要设置为true，
-               在production模式下，usedExports和unused默认为true，所以可以不用设置
-         1.2 package.json的sideEffects：
-              1.2.1. 通过es module导入的文件，都可以使用tree-shaking，optimization.sideEffects决定是否启用tree-shaking。
-              1.2.2. package.json的sideEffects设置为false，说明所有的文件都没有副作用。如import './utils/math.js'或者import {sum} from './utils/math.js'但是没有使用sum的，
-                       都被认为没有副作用而不会参与打包。
-              1.2.3. sideEffects可以设置为数组，表示哪些文件是有副作用的，到时也会参与打包。
-              1.2.4. 如果一个文件没有副作用而被删除，这个文件里正常的导入、使用的其他文件也不会参与打包
-              1.2.5. 如果一个文件有副作用，但是导入的文件没有副作用，那么这个导入的文件不会参与打包。
-     2.css代码的tree-shaking
-        2.1 purgecss-webpack-plugin：删除没有使用上的样式，例如.title{color:red}，html没有元素有类名title的话，这个.title样式会被删除
+    1. js代码的tree-shaking
+        1. optimization.usedExports
+            对导出但是没有使用的内容添加魔法注释unused harmony export xxxxx，用来告诉TerserPlugin删除哪些没用的js代码，而且compress.unused要设置为true，
+            在production模式下，usedExports和unused默认为true，所以可以不用设置
+        2. package.json的sideEffects：
+            1. 通过es module导入的文件，都可以使用tree-shaking，optimization.sideEffects决定是否启用tree-shaking。
+            2. package.json的sideEffects设置为false，说明所有的文件都没有副作用。如import './utils/math.js'或者import {sum} from './utils/math.js'但是没有使用sum的，
+                都被认为没有副作用而不会参与打包。
+            3. sideEffects可以设置为数组，表示哪些文件是有副作用的，到时也会参与打包。
+            4. 如果一个文件没有副作用而被删除，这个文件里正常的导入、使用的其他文件也不会参与打包
+            5. 如果一个文件有副作用，但是导入的文件没有副作用，那么这个导入的文件不会参与打包。
+    2. css代码的tree-shaking
+        purgecss-webpack-plugin：删除没有使用上的样式，例如.title{color:red}，html没有元素有title类名的话，这个.title样式会被删除
 
 ### 六. scope hoisting作用域提升(默认production模式已开启)：
      在plugins设置 new webpack.optimize.ModuleConcatenationPlugin()
@@ -258,7 +258,7 @@
 
 ## webpack源码：
 ### 一. 调用webpack()函数，创建compiler对象
-    1.在createCompiler时，创建完compiler就会开始注册插件(插件可以是对象，对象要有apply方法，也可以是函数，都会接收compiler为参数)
+    1. 在createCompiler时，创建完compiler就会开始注册插件(插件可以是对象，对象要有apply方法，也可以是函数，都会接收compiler为参数)
 ### 二. compiler调用run()方法，开始进行编译和打包，传入回调函数查看结果
 
 ## 自定义loader：
@@ -267,8 +267,8 @@
 ### 二. webpack是通过loader runner库调用这个函数，并且传入3个参数content、map、meta；
 
 ### 三.同步loader和异步loader：
-    1.同步loader只需要用return返回值或者调用this.callback(err,content)，区别是this.callback方法可以传递错误信息；
-    2.异步loader调用this.async()方法获取callback，然后在异步的地方调用callback(err, content)；
+    1. 同步loader只需要用return返回值或者调用this.callback(err,content)，区别是this.callback方法可以传递错误信息；
+    2. 异步loader调用this.async()方法获取callback，然后在异步的地方调用callback(err, content)；
 
 ### 四. 给loader传参：
     通过options配置参数，在loader里面调用this.getOptions()即可。
