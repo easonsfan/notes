@@ -117,7 +117,7 @@
         removeAllListeners(eventName)：有指定事件的，就移除所有指定的事件，没有指定事件的，就移除所有已经绑定的事件；
 
 ### 七. event loop：事件循环
-![event loop](/assets/event%20loop.png "event loop")    
+![event loop](/assets/event_loop.png "event loop")    
 以上是node事件循环的每个阶段队列以及执行顺序。
 
     1.timers：执行setTimeout和setInterval的回调；
@@ -125,7 +125,7 @@
     3.idle，prepare：系统内部使用；
     4.poll：获取新的I/O事件；执行I/O的回调(除了其他阶段的回调以及微任务)，其余情况 node 将在适当的时候在此阻塞；
     说明: 1. 适当的时候：已经没有其它可执行的任务的时候，此时还有异步的I/O没有返回；此时程序会在此阻塞，等待I/O的回调；
-          2. 当队列用尽或达到回调限制，事件循环将移动到下一阶段执行，也就是到待定回调pending callbacks阶段执行
+          1. 当队列用尽或达到回调限制，事件循环将移动到下一阶段执行，也就是到待定回调pending callbacks阶段执行
     
     5.check：存放setImmediate的回调；
     6.close callbacks：存放sokcet等的close事件回调；
@@ -321,3 +321,5 @@ fs.watchFile() 性能问题，fs.watch() 平台不一致等两个方法都有不
                 X_OK：表明调用进程可以执行文件，在 Windows 上无效（表现等同 fs.constants.F_OK）
         3. fs.rename(oldPath, newPath, callback)：将 oldPath 上的文件重命名为 newPath 提供的路径名，如果 newPath 已存在，则覆盖它；
         4. fs.chmod(path, mode, callback)：修改文件权限，mode 使用八进制表示 0o666
+
+### 九. Buffer
