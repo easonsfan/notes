@@ -323,3 +323,15 @@ fs.watchFile() 性能问题，fs.watch() 平台不一致等两个方法都有不
         4. fs.chmod(path, mode, callback)：修改文件权限，mode 使用八进制表示 0o666
 
 ### 九. Buffer和Stream
+#### **1.Buffer**
+Buffer是一个用来存储和操作二进制数据的字节数组。  
+数组每一个元素都是1个字节，超过1个字节的数据会通过 (value & 255) 截断，让它在0-255的范围之内。  
+默认十六进制显示。  
+
+实例化
+Buffer.from：  
+Buffer.from(string [, encoding])：返回一个包含给定字符串的 Buffer  
+Buffer.from(buffer)：返回给定 Buffer 的一个副本 Buffer  
+Buffer.from(array)：返回一个内容包含所提供的字节副本的 Buffer，数组中每一项是一个表示八位字节的**数字**，所以值必须在 0 ~ 255 之间，否则会取模  
+Buffer.from(arrayBuffer)：返回一个与给定的 ArrayBuffer 共享内存的新 Buffer  
+Buffer.from(object[, offsetOrEncoding[, length]])：取 object 的 valueOf  或 Symbol.toPrimitive 初始化 Buffer  
