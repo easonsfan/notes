@@ -328,10 +328,71 @@ Buffer是一个用来存储和操作二进制数据的字节数组。
 数组每一个元素都是1个字节，超过1个字节的数据会通过 (value & 255) 截断，让它在0-255的范围之内。  
 默认十六进制显示。  
 
-实例化
-Buffer.from：  
+实例化  
+1.Buffer.from：  
 Buffer.from(string [, encoding])：返回一个包含给定字符串的 Buffer  
 Buffer.from(buffer)：返回给定 Buffer 的一个副本 Buffer  
 Buffer.from(array)：返回一个内容包含所提供的字节副本的 Buffer，数组中每一项是一个表示八位字节的**数字**，所以值必须在 0 ~ 255 之间，否则会取模  
 Buffer.from(arrayBuffer)：返回一个与给定的 ArrayBuffer 共享内存的新 Buffer  
 Buffer.from(object[, offsetOrEncoding[, length]])：取 object 的 valueOf  或 Symbol.toPrimitive 初始化 Buffer  
+
+2.Buffer.alloc：  
+Buffer.alloc(size [, fill [, encoding]])：  
+size：分配size个字节；  
+fill：填充buffer的值，不传时默认为0；  
+encoding：当fill为字符串时，encoding用来指定编码格式；默认UTF-8    
+
+3.Buffer.allocUnsafe:  
+和alloc相比不安全，因为这个方法分配内存时是没有初始化，而是可能直接拿已经存在旧数据的内存，所以这个方法的速度比alloc快，但是可能会拿到一些敏感的数据，就会不安全  
+Buffer.allocUnsafe(size)  
+
+编码  
+Buffer 目前支持以下几种编码格式  
+● ascii  
+● utf8  
+● utf16le  
+● base64  
+● binary  
+● hex  
+
+Buffer 和 String 之间的转换：  
+String 转 buffer：  
+const buf = Buffer.from('test')  
+buffer 转 String：  
+buf.toString()  
+
+string_decoder插件可以解决中文数据从buffer转回字符串时乱码问题  
+
+Buffer 其它常用 API  
+● Buffer.isBuffer：判断对象是否为 Buffer  
+● Buffer.isEncoding：判断 Buffer 对象编码  
+● Buffer.concat：将多个buffer拼接成一个buffer  
+● buf.length：返回 分配内存的字节数，而不是数据实际占用的字节数  
+● buf.indexOf：和数组的 indexOf 类似，返回某字符串、acsii 码或者 buf 在改 buf 中的位置  
+● buf.copy(target)：将一个 buf 的（部分）内容复制到 target 中  
+
+#### **2.Stream**
+流是用于在 Node.js 中处理流数据的抽象接口。  
+
+**使用流的好处：**  
+流可以让数据一点一点地从数据源流到目的地，在这个流动的过程中，程序所占用的内存是很少的。  
+如果直接把数据源的数据一次性地传递到目的地，在传递大文件时程序占用的内存会突然增大，如果大量的请求同时发起的话会使得程序崩溃，服务器爆炸。  
+
+**流的分类：**  
+1.可读流：对提供数据的源头(source)的抽象，是数据源用来供程序消费的流  
+
+读取模式：  
+1.流动模式：数据自动地从底层读取，形成流动现象，并通过事件提供给应用程序。  
+以下情况能让可读流处于流动模式：  
+监听 data 事件；  
+使用 stream.pipe 方法；
+使用 stream.resume 方法；
+
+2.暂停模式：数据会堆积在内部缓冲器中，必须显式调用 stream.read() 读取数据块。  
+以下情况能让可读流处于暂停模式：  
+在流没有使用 stream.pipe 方法时，使用 stream.pause 方法；    
+在暂停模式下消费数据：  
+监听 readable 事件 可写流在数据准备好后会触发该事件回调，此时需要在回调函数中使用 stream.read() 来主动消费数据。readable 事件表明流有新的动态：要么有新的数据，要么流已经读取所有数据  
+
+
+2.可写流：对数据写入目的地的一种抽象，是用来消费上游流过来的数据
