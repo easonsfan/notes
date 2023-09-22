@@ -521,7 +521,8 @@ callback：当管道完全地完成时调用
     });
 
 ### 十. http模块
-http.createServer(callback)：创建一个服务器。
+http.createServer：创建服务器  
+const server = http.createServer(callback)：创建一个服务器。
 callback的2个参数：  
 req：一个可读流，常用的属性 url、method、headers；  
 res：一个可写流，常用的属性和方法：  
@@ -532,3 +533,10 @@ getHeader(name)：返回指定 name 的 header
 getHeaders()：返回包含了所有 header 信息的对象  
 setHeader(name, value)：设置响应头，和 writeHead() 合并，有冲突时优先使用 writeHead()  
 statusCode：设置响应 HTTP status  
+
+服务器实例 server 的属性和方法：  
+listen(callback)：启动 http 服务器的监听连接；  
+listening：判断服务器是否正在监听连接；  
+close(callback)：停止服务器接受新连接并关闭连接到该服务器的所有未发送请求或等待响应的连接
+
+http.request：发送http请求
