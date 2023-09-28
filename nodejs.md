@@ -521,7 +521,7 @@ callback：当管道完全地完成时调用
     });
 
 ### 十. http模块
-http.createServer：创建服务器  
+1.http.createServer：创建服务器  
 const server = http.createServer(callback)：创建一个服务器。
 callback的2个参数：  
 req：一个可读流，常用的属性 url、method、headers；  
@@ -539,4 +539,29 @@ listen(callback)：启动 http 服务器的监听连接；
 listening：判断服务器是否正在监听连接；  
 close(callback)：停止服务器接受新连接并关闭连接到该服务器的所有未发送请求或等待响应的连接
 
-http.request：发送http请求
+2.http.request：发送http请求
+
+3.response 内容压缩  
+使用方法：  
+1.发送请求时设置请求头 accept-encoding 的值，可设置的值有 gzip，deflate，br；  
+2.根据 accept-encoding 有的值，设置请求头 content-encoding，指定用哪种压缩方式。例如 accept-encoding 的值为 gzip，deflate，br，那么 content-encoding 可以设置为 gzip，然后内容用 gzip 方式压缩后返回；  
+3.浏览器会根据这2个字段对内容进行解压；
+
+判断内容是否需要压缩  
+因为压缩有利于提升 Web 性能，所以尽可能对数据进行压缩，但压缩是一个有 CPU 开销的任务，有些文件类型本身已经压缩过，比如 jpeg 图片，无需再次压缩消耗 CPU，甚至再次压缩可能导致体积变大  
+可以使用 compressible 插件判断是否需要压缩，配合 mime-types 获取文件的 MIME，然后用 MIME 来判断就可以。
+
+    const contentType = mime.contentType(path.extname(url));
+    const compressible = require('compressible');
+    compressible(contentType) // true 或者 false
+
+
+4.浏览器缓存  
+强缓存：  
+http 1.0 Expires：指定一个绝对时间，例如年月日时分秒；  
+http 1.1 Cache-Control：指定一个相对时间，max-age=xxxxx，单位是秒，还可以设置其他值，例如 no-store，表示不缓存；   
+协商缓存：  
+http 1.0 Last-Modified：绝对时间，文件上一次被修改的时间，每次请求头都会发送 If-Modified-Since 给后端对比2次时间是否一致，不一致就返回文件，而且设置 Last-Modified 为最新修改时间，一致就返回304且不返回内容；  
+http 1.1 Etag：根据文件内容生成 hash 值然后设置给 Etag。每次请求会发送 If-None-Match 给后端对比文件是否有修改；  
+>如果强缓存和协商缓存都存在，优先使用强缓存的字段  
+>Cache-Control > Expires , Etag > Last-Modified
