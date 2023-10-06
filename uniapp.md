@@ -21,6 +21,7 @@
     4. image组件
     5. scroll-view组件 滚动区域
     6. swiper组件 轮播图
+**uniapp不能使用 ref 获取 dom 元素，使用 uni.createSelectorQuery().select('.class').boundingClientRect(callback),exec() 获取**
 
 ### 四. ui组件库 uni-ui
     以上的组件为基础组件，这个uni-ui的组件为扩展组件
@@ -63,7 +64,7 @@
         1. 使用navigateBack返回上一页时，使用getOpenerEventChannel方法获取eventchannel，然后使用eventchannel.emit方法触发自定义事件然后传递参数，
             在原来的页面的navigateTo方法中，通过events对象定义一个自定义事件，就可以接收eventchannel.emit传过来的参数
         2. 通过事件总线uni.$on绑定事件，uni.$emit触发事件
-    
+
 ### 八. 生命周期
     1. 应用生命周期：
         在App.vue里面的3个生命周期：
