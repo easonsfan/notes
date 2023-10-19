@@ -80,11 +80,15 @@
 
 ### 九. 自定义组件
     1. easycom方式：
-        在根目录的components文件夹或者在uni_modules的components文件夹里创建组件，
+        在根目录的 components 文件夹或者在uni_modules的components文件夹里创建组件，
         必须符合 components/组件名称/组件名称.vue 或者 uni_modules/插件ID/components/组件名称/组件名称.vue 的结构(其中插件id就是组件名字，例如uni-badge)
         就可以不用引用、注册，直接在页面中使用
+    2. 在 components 或者 uni_modules 目录下的组件，只有使用到的组件才会打包。
 
 ### 十. 条件编译
     待续...
 
 ### 十一. uniapp内置了pinia，可以直接使用
+
+### 十二. 第三方插件
+    可以直接用 npm 安装后使用，不能用的看插件市场有没有相关插件。

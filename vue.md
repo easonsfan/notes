@@ -29,3 +29,6 @@
 ### WeakMap和Map：
       WeakMap能防止内存泄漏，是因为WeakMap不会对key的对象进行引用，在对象没有引用时，垃圾回收机制会清除掉这个对象；
       而Map是会引用key的对象的，对象没有外部引用，但是Map还是会引用这个对象，自然不能防止内存泄漏
+
+### 全局变量：
+      定义在 app.config.globalProperties 的变量，可以在 getCurrentInstance() 的 appContext 里获取
