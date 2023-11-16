@@ -12,6 +12,7 @@
     pages.json：页面配置，相当于微信小程序的app.json；
     uni.scss：只能写自定义的全局样式，普通样式是不生效的；
     App.vue：编写所有页面的公共样式，style标签不可以加scoped。其他组件加不加scoped也一样，样式默认是只影响当前组件页面；
+    static：存放本地图片、字体、视频等文件，不应该放在assets目录里，tabbar里的图片只能放在static目录下，放到assets会报错；
 
 ### 三. 常用内置组件
     // div可以使用，但是不推荐，因为会影响编译速度，而且这个div不是跨平台组件
@@ -87,10 +88,58 @@
     2. 在 components 或者 uni_modules 目录下的组件，只有使用到的组件才会打包。
 
 ### 十. 条件编译
-    待续...
+    1. 条件编译的作用：为了在不同平台实现各自独有的特性。
+    2.  #ifdef：if defined 仅在某平台存在；
+        #ifndef：if not defined 除了某平台均存在；
+        %PLATFORM%：平台名称，具体的取值如：VUE3、APP-PLUS、H5、MP-WEIXIN、uniVersion等，详情可以看官网。
+    3. 可以编写条件编译的文件：.vue/.nvue/.uvue  .js/.uts .css pages.json 各种预编译文件：.less .scss等
+    4. static 目录的条件编译：
+        在 static 目录下按各个平台的名字命名的目录，会在打包时只打包该平台对应的目录   
 
 ### 十一. uniapp内置了pinia，可以直接使用
 
 ### 十二. 第三方插件
     可以直接用 npm 安装后使用，不能用的看插件市场有没有相关插件。
+
+### 十三. 分包和分包预加载规则
+    跟 webpack 的按需加载差不多，都是在用到时利用预加载去下载对应的模块或者页面，能优化应用的性能。
+
+    具体做法是在 pages.json 的 subPackages 属性配置：
+    // tabbar中的页面需要放到主包中
+    "pages": [{
+		"path": "pages/index/index",
+		"style": { ...}
+	}, {
+		"path": "pages/login/login",
+		"style": { ...}
+	}],
+    // 分包配置
+    "subPackages"：[{
+		"root": "pagesA",
+        "name":"list",
+		"pages": [{
+			"path": "list/list",
+			"style": { ...}
+		}]
+	}, {
+		"root": "pagesB",
+        "name":"detail",
+		"pages": [{
+			"path": "detail/detail",
+			"style": { ...}
+		}]
+	}]  
+
+    // 要启用预加载，还需要以下配置
+    "preloadRule": {
+		"pagesA/list/list": {
+			"network": "all",
+			"packages": ["__APP__"]
+		},
+		"pagesB/detail/detail": {
+			"network": "all",
+			"packages": ["pagesA"]
+		}
+	}
+    key 是页面路径，value 是进入此页面的预下载配置。这种配置的意思是，在进入 pagesB/detail/detail 页面时，就去预加载 pagesA 这个包的页面。
 
