@@ -103,43 +103,47 @@
 
 ### 十三. 分包和分包预加载规则
     跟 webpack 的按需加载差不多，都是在用到时利用预加载去下载对应的模块或者页面，能优化应用的性能。
-
-    具体做法是在 pages.json 的 subPackages 属性配置：
-    // tabbar中的页面需要放到主包中
+    
+    项目的目录分配：
+     tabbar中的页面需要放到主包中（pages目录中）;
+     根目录的components和static放置公共的组件和资源；
+     其他分包需要创建自己的目录，目录下可以放置对应自己分包的静态资源static和components
+     
+    pages.json 的 subPackages 属性配置：
     "pages": [{
-		"path": "pages/index/index",
-		"style": { ...}
-	}, {
-		"path": "pages/login/login",
-		"style": { ...}
-	}],
+    	"path": "pages/index/index",
+    	"style": { ...}
+    }, {
+    	"path": "pages/login/login",
+    	"style": { ...}
+    }],
     // 分包配置
     "subPackages"：[{
-		"root": "pagesA",
+    	"root": "pagesA",
         "name":"list",
-		"pages": [{
-			"path": "list/list",
-			"style": { ...}
-		}]
-	}, {
-		"root": "pagesB",
+    	"pages": [{
+    		"path": "list/list",
+    		"style": { ...}
+    	}]
+    }, {
+    	"root": "pagesB",
         "name":"detail",
-		"pages": [{
-			"path": "detail/detail",
-			"style": { ...}
-		}]
-	}]  
-
+    	"pages": [{
+    		"path": "detail/detail",
+    		"style": { ...}
+    	}]
+    }]  
+    
     // 要启用预加载，还需要以下配置
     "preloadRule": {
-		"pagesA/list/list": {
-			"network": "all",
-			"packages": ["__APP__"]
-		},
-		"pagesB/detail/detail": {
-			"network": "all",
-			"packages": ["pagesA"]
-		}
-	}
+    	"pagesA/list/list": {
+    		"network": "all",
+    		"packages": ["__APP__"]
+    	},
+    	"pagesB/detail/detail": {
+    		"network": "all",
+    		"packages": ["pagesA"]
+    	}
+    }
     key 是页面路径，value 是进入此页面的预下载配置。这种配置的意思是，在进入 pagesB/detail/detail 页面时，就去预加载 pagesA 这个包的页面。
 
